@@ -54,16 +54,17 @@ class PhabricatorDifferentialPostJob(
           .sorted(issueComparator)
           .forEach { i ->
             run {
-              globalReportBuilder.add(i)
+//              globalReportBuilder.add(i)
               val ic = inlineReportBuilder.issue(i).build()
               val filePath = i.inputComponent().toString()
               try {
                 differentialClient.postInlineComment(diffID, filePath, i.line()!!, ic)
+                globalReportBuilder.add(i)
                 log.debug("Comment $ic has been published")
               } catch (e: ConduitException) {
                 if (e.message.equals("Requested file doesn't exist in this revision.")) {
                   val message = "Unmodified file $filePath  on line ${i.line()}\n\n $ic"
-                  differentialClient.postComment(diff.revisionId, message, false)
+//                  differentialClient.postComment(diff.revisionId, message, false)
                 } else {
                   log.error(e.message, e)
                 }
